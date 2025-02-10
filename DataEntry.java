@@ -1,3 +1,5 @@
+package courseProject;
+
 import java.util.Scanner;
 
 public class DataEntry {
