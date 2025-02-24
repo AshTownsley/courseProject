@@ -1,5 +1,3 @@
-package courseProject;
-
 import java.util.Scanner;
 
 public class DataEntry {
@@ -32,5 +30,22 @@ public class DataEntry {
             }
         } while (!input.matches("\\d{" + length + "}"));
         return input;
+    }
+
+    public static double getDoubleInRange(String prompt, double min, double max) {
+        double value;
+        while (true) {
+            try {
+                System.out.print(prompt);
+                value = Double.parseDouble(scanner.nextLine());
+                if (value >= min && value <= max) {
+                    return value;
+                } else {
+                    System.out.println("Value must be between " + min + " and " + max + ".");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a numeric value.");
+            }
+        }
     }
 }
