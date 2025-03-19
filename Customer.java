@@ -10,6 +10,7 @@ public class Customer {
     private String state;
     private String zip;
     private String phone;
+    private Account account; // Added to associate an account with a customer
 
     public Customer(String customerID, String ssn, String lastName, String firstName,
                     String street, String city, String state, String zip, String phone) {
@@ -22,6 +23,7 @@ public class Customer {
         setState(state);
         setZip(zip);
         setPhone(phone);
+        this.account = null; // Initially, no account assigned
     }
 
     // Getters
@@ -34,6 +36,12 @@ public class Customer {
     public String getState() { return state; }
     public String getZip() { return zip; }
     public String getPhone() { return phone; }
+    public Account getAccount() { return account; } // Get assigned account
+
+    // Setter for Account
+    public void setAccount(Account account) {
+        this.account = account;
+    }
 
     // Setters with validation
     public void setCustomerID(String customerID) {
@@ -110,7 +118,11 @@ public class Customer {
 
     @Override
     public String toString() {
-        return String.format("Customer ID: %s | Name: %s %s | SSN: %s | Address: %s, %s, %s %s | Phone: %s",
-                customerID, firstName, lastName, ssn, street, city, state, zip, phone);
+        String accountInfo = (account != null) 
+            ? String.format("Account Type: %s | Balance: $%.2f", account.getAccountType(), account.getBalance())
+            : "No account assigned.";
+        
+        return String.format("Customer ID: %s | Name: %s %s | SSN: %s | Address: %s, %s, %s %s | Phone: %s\n%s",
+                customerID, firstName, lastName, ssn, street, city, state, zip, phone, accountInfo);
     }
 }
