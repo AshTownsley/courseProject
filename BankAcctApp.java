@@ -23,11 +23,11 @@ public class BankAcctApp {
                 while (true) {
                     accountType = scanner.nextLine().toUpperCase();
                     if (accountType.equals("CHK")) {
-                        account = new CheckingAccount(id);
+                        account = new CheckingAccount(id);  // FIXED: Create a CheckingAccount
                         break;
                     } else if (accountType.equals("SAV")) {
-                        account = new SavingsAccount(id);
-                        break;
+                        account = new SavingsAccount(id);  // FIXED: Create a SavingsAccount
+                            break;
                     } else {
                         System.out.println("Invalid choice. Please enter CHK or SAV.");
                     }
