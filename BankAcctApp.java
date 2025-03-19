@@ -1,48 +1,63 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class BankAcctApp {
     public static void main(String[] args) {
         ArrayList<Customer> customers = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
         boolean moreCustomers = true;
 
         while (moreCustomers) {
             try {
                 System.out.println("\nEnter Customer Details:");
-
                 String id = DataEntry.getStringWithLimit("Customer ID (max 5 chars): ", 5);
                 String ssn = DataEntry.getNumericString("SSN (9 digits): ", 9);
                 String lastName = DataEntry.getStringWithLimit("Last Name (max 20 chars): ", 20);
                 String firstName = DataEntry.getStringWithLimit("First Name (max 15 chars): ", 15);
-                String street = DataEntry.getStringWithLimit("Street (max 20 chars): ", 20);
-                String city = DataEntry.getStringWithLimit("City (max 20 chars): ", 20);
-                String state = DataEntry.getStringWithLimit("State (2 chars): ", 2);
-                String zip = DataEntry.getNumericString("ZIP (5 digits): ", 5);
-                String phone = DataEntry.getNumericString("Phone (10 digits): ", 10);
-
-                Customer customer = new Customer(id, ssn, lastName, firstName, street, city, state, zip, phone);
-                System.out.println("Customer added successfully!");
-
-                System.out.println("\nEnter Account Details for " + firstName + " " + lastName + ":");
-
-                String accountNumber = DataEntry.getStringWithLimit("Account Number (max 5 chars): ", 5);
+                Customer customer = new Customer(id, ssn, lastName, firstName);
+                customers.add(customer);
+                
+                System.out.println("\nSelect Account Type (CHK for Checking, SAV for Savings): ");
                 String accountType;
+                Account account = null;
                 while (true) {
-                    accountType = DataEntry.getString("Account Type (CHK or SAV): ").toUpperCase();
-                    if (accountType.equals("CHK") || accountType.equals("SAV")) break;
-                    System.out.println("Invalid Account Type. Enter 'CHK' or 'SAV'.");
+                    accountType = scanner.nextLine().toUpperCase();
+                    if (accountType.equals("CHK")) {
+                        account = new CheckingAccount(id);
+                        break;
+                    } else if (accountType.equals("SAV")) {
+                        account = new SavingsAccount(id);
+                        break;
+                    } else {
+                        System.out.println("Invalid choice. Please enter CHK or SAV.");
+                    }
                 }
-
-                double serviceFee = DataEntry.getDoubleInRange("Service Fee ($0.00 - $10.00): ", 0, 10);
-                double interestRate = DataEntry.getDoubleInRange("Interest Rate (0% - 10%): ", 0, 10);
-                double overdraftFee = DataEntry.getDoubleInRange("Overdraft Fee: ", 0, Double.MAX_VALUE);
-
-                Account account = new Account(accountNumber, accountType, serviceFee, interestRate, overdraftFee);
+                
+                customer.setAccount(account);
                 System.out.println("Account created successfully!");
 
-                customers.add(customer);
-                System.out.print("Add another customer? (yes/no): ");
-                moreCustomers = DataEntry.getString("").equalsIgnoreCase("yes");
+                // Perform Transactions
+                boolean moreTransactions = true;
+                while (moreTransactions) {
+                    System.out.println("\nChoose Transaction: 1 - Deposit, 2 - Withdraw, 3 - Exit");
+                    int choice = scanner.nextInt();
+                    if (choice == 1) {
+                        System.out.print("Enter deposit amount: ");
+                        double amount = scanner.nextDouble();
+                        account.deposit(amount);
+                    } else if (choice == 2) {
+                        System.out.print("Enter withdrawal amount: ");
+                        double amount = scanner.nextDouble();
+                        account.withdrawal(amount);
+                    } else if (choice == 3) {
+                        moreTransactions = false;
+                    } else {
+                        System.out.println("Invalid option. Try again.");
+                    }
+                }
 
+                System.out.print("Add another customer? (yes/no): ");
+                moreCustomers = scanner.next().equalsIgnoreCase("yes");
             } catch (IllegalArgumentException e) {
                 System.out.println("Error: " + e.getMessage());
             }
@@ -51,6 +66,7 @@ public class BankAcctApp {
         System.out.println("\nAll Customers and Accounts:");
         for (Customer c : customers) {
             System.out.println(c);
+            System.out.println("Balance after interest: $" + c.getAccount().balance());
         }
     }
 }
