@@ -1,45 +1,25 @@
+package courseProject;
+
 public abstract class Account {
-    private String accountNumber;
-    private double balance;
-    private double serviceFee;
-    private double interestRate;
+    protected double balance; // Make balance protected if using in subclasses
+    private String customerID;
 
-    public Account(String accountNumber) {
-        this.accountNumber = accountNumber;
-        this.balance = 0.0; // Initial balance is 0
+    public Account(String customerID) {
+        this.customerID = customerID;
+        this.balance = 0.0; // Initial balance set to 0
     }
 
-    public abstract void deposit(double amount);
-    public abstract void withdrawal(double amount);
-    public abstract double balance();
-
-    public String getAccountNumber() {
-        return accountNumber;
+    public String getAccountType() {
+        return this.getClass().getSimpleName();
     }
 
+    // Getter method to access balance
     public double getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
-    public double getServiceFee() {
-        return serviceFee;
-    }
-
-    public void setServiceFee(double serviceFee) {
-        this.serviceFee = serviceFee;
-    }
-
-    public double getInterestRate() {
-        return interestRate;
-    }
-
-    public void setInterestRate(double interestRate) {
-        this.interestRate = interestRate;
-    }
-
-    public abstract void applyInterest();  // Specific to checking or savings accounts
+    // Abstract methods for subclasses to implement
+    public abstract void deposit(double amount);
+    public abstract void withdrawal(double amount);
+    public abstract void applyInterest();
 }
