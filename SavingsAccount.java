@@ -1,3 +1,5 @@
+package courseProject;
+
 public class SavingsAccount extends Account {
     private static final double SERVICE_FEE = 0.25; // 25 cents
     private static final double INTEREST_RATE = 0.05; // 5% interest rate
