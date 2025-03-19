@@ -24,11 +24,6 @@ public class CheckingAccount extends Account {
     }
 
     @Override
-    public double getBalance() {
-        return balance; // No interest is applied automatically here
-    }
-
-    @Override
     public void applyInterest() {
         balance *= (1 + INTEREST_RATE); // Apply 2% interest
     }
