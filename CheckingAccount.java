@@ -1,3 +1,5 @@
+package courseProject;
+
 public class CheckingAccount extends Account {
     private static final double SERVICE_FEE = 0.50;
     private static final double OVERDRAFT_FEE = 30.00;
