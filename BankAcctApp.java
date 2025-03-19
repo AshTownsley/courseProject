@@ -11,37 +11,40 @@ public class BankAcctApp {
 
         while (moreCustomers) {
             try {
+                // Input customer details
                 System.out.println("\nEnter Customer Details:");
                 String id = DataEntry.getStringWithLimit("Customer ID (max 5 chars): ", 5);
                 String ssn = DataEntry.getNumericString("SSN (9 digits): ", 9);
                 String lastName = DataEntry.getStringWithLimit("Last Name (max 20 chars): ", 20);
                 String firstName = DataEntry.getStringWithLimit("First Name (max 15 chars): ", 15);
-                String street = DataEntry.getStringWithLimit("Street (max 20 chars): ", 20);
+                String street = DataEntry.getStringWithLimit("Street Address (max 20 chars): ", 20);
                 String city = DataEntry.getStringWithLimit("City (max 20 chars): ", 20);
-                String state = DataEntry.getState("State (2 chars): ");
+                String state = DataEntry.getStringWithLimit("State (2-letter abbreviation): ", 2);
                 String zip = DataEntry.getNumericString("ZIP (5 digits): ", 5);
-                String phone = DataEntry.getNumericString("Phone (10 digits): ", 10);
-                
+                String phone = DataEntry.getNumericString("Phone Number (10 digits): ", 10);
+
+                // Create customer and add to list
                 Customer customer = new Customer(id, ssn, lastName, firstName, street, city, state, zip, phone);
                 customers.add(customer);
 
+                // Select account type
                 System.out.println("\nSelect Account Type (CHK for Checking, SAV for Savings): ");
                 String accountType;
                 Account account = null;
                 while (true) {
                     accountType = scanner.nextLine().toUpperCase();
                     if (accountType.equals("CHK")) {
-                        account = new CheckingAccount(id);  // Create a CheckingAccount
+                        account = new CheckingAccount(id);  // Create CheckingAccount
                         break;
                     } else if (accountType.equals("SAV")) {
-                        account = new SavingsAccount(id);  // Create a SavingsAccount
+                        account = new SavingsAccount(id);  // Create SavingsAccount
                         break;
                     } else {
                         System.out.println("Invalid choice. Please enter CHK or SAV.");
                     }
                 }
 
-                customer.setAccount(account);
+                customer.setAccount(account);  // Associate the account with the customer
                 System.out.println("Account created successfully!");
 
                 // Perform Transactions
@@ -60,26 +63,30 @@ public class BankAcctApp {
                         account.withdrawal(amount);
                         System.out.printf("Transaction complete. Balance: $%.2f\n", account.getBalance());
                     } else if (choice == 3) {
-                        // Apply interest before exit
-                        customer.applyInterestToAccount();
-                        System.out.printf("Interest applied. Final balance: $%.2f\n", account.getBalance());
+                        // Apply interest when exiting
+                        account.applyInterest();
+                        System.out.printf("Account balance after interest: $%.2f\n", account.getBalance());
                         moreTransactions = false;
                     } else {
                         System.out.println("Invalid option. Try again.");
                     }
                 }
 
+                // Ask if another customer should be added
                 System.out.print("Add another customer? (yes/no): ");
                 moreCustomers = scanner.next().equalsIgnoreCase("yes");
+                scanner.nextLine();  // Consume the newline character after reading yes/no
+
             } catch (IllegalArgumentException e) {
                 System.out.println("Error: " + e.getMessage());
             }
         }
 
+        // Display all customers and accounts
         System.out.println("\nAll Customers and Accounts:");
         for (Customer c : customers) {
-            System.out.println(c);
+            System.out.println(c);  // Display customer details
+            System.out.printf("Balance after interest: $%.2f\n", c.getAccount().getBalance());  // Display balance
         }
     }
 }
-
