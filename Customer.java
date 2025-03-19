@@ -116,10 +116,17 @@ public class Customer {
         }
     }
 
+    // Apply interest to the account, if available
+    public void applyInterestToAccount() {
+        if (account != null) {
+            account.applyInterest(); // Calls the specific applyInterest() method from the account type
+        }
+    }
+
     @Override
     public String toString() {
         String accountInfo = (account != null) 
-            ? String.format("Account Type: %s | Balance: $%.2f", account.getAccountType(), account.getBalance())
+            ? String.format("Account Type: %s | Balance: $%.2f", account.getClass().getSimpleName(), account.getBalance())
             : "No account assigned.";
         
         return String.format("Customer ID: %s | Name: %s %s | SSN: %s | Address: %s, %s, %s %s | Phone: %s\n%s",
