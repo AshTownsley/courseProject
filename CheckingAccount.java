@@ -1,42 +1,36 @@
 import java.time.LocalDate;
 
 public class CheckingAccount extends Account {
+    private static final double SERVICE_FEE = 0.50;
     private static final double OVERDRAFT_FEE = 30.00;
-    private static final double TRANSACTION_FEE = 0.50;
+    private static final double INTEREST_RATE = 0.02;
 
     public CheckingAccount(String accountNumber) {
-        super(accountNumber, "CHK", TRANSACTION_FEE, 2.0); // 2% interest
+        super(accountNumber, "Checking");
     }
 
     @Override
     public void withdrawal(double amount) {
-        if (amount <= 0) {
-            System.out.println("Error: Withdrawal amount must be greater than zero.");
-            return;
+        if (amount + SERVICE_FEE <= getBalance()) {
+            setBalance(getBalance() - amount - SERVICE_FEE);
+            System.out.println("Withdrawal successful. Service fee of $0.50 applied.");
+        } else {
+            setBalance(getBalance() - amount - SERVICE_FEE - OVERDRAFT_FEE);
+            System.out.println("Overdraft! $30 fee applied.");
         }
-
-        balance -= (amount + TRANSACTION_FEE);
-        if (balance < 0) {
-            balance -= OVERDRAFT_FEE;
-            System.out.println("Warning: Overdraft fee of $30 applied.");
-        }
-
-        System.out.println("Withdrawal successful. New balance: $" + balance);
+        displayBalance();
     }
 
     @Override
     public void deposit(double amount) {
-        if (amount <= 0) {
-            System.out.println("Error: Deposit amount must be greater than zero.");
-            return;
-        }
-
-        balance += (amount - TRANSACTION_FEE);
-        System.out.println("Deposit successful. New balance: $" + balance);
+        setBalance(getBalance() + amount - SERVICE_FEE);
+        System.out.println("Deposit successful. Service fee of $0.50 applied.");
+        displayBalance();
     }
 
-    @Override
-    public double balance() {
-        return balance * 1.02; // Apply 2% interest
+    public void applyInterest() {
+        double interest = getBalance() * INTEREST_RATE;
+        setBalance(getBalance() + interest);
+        System.out.println("Interest applied at 2% rate.");
     }
 }
