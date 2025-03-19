@@ -1,25 +1,45 @@
-public abstract class Account implements AccountInterface {
-    protected String accountNumber;
-    protected String accountType;
-    protected double balance;
-    protected double serviceFee;
-    protected double interestRate;
+public abstract class Account {
+    private String accountNumber;
+    private double balance;
+    private double serviceFee;
+    private double interestRate;
 
-    public Account(String accountNumber, String accountType, double serviceFee, double interestRate) {
+    public Account(String accountNumber) {
         this.accountNumber = accountNumber;
-        this.accountType = accountType;
-        this.serviceFee = serviceFee;
-        this.interestRate = interestRate;
-        this.balance = 0.0; // Default initial balance
+        this.balance = 0.0; // Initial balance is 0
     }
 
-    // Getters
-    public String getAccountNumber() { return accountNumber; }
-    public String getAccountType() { return accountType; }
-    public double getBalance() { return balance; }
-    
-    // Abstract methods to be implemented in subclasses
-    public abstract void withdrawal(double amount);
     public abstract void deposit(double amount);
+    public abstract void withdrawal(double amount);
     public abstract double balance();
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public double getServiceFee() {
+        return serviceFee;
+    }
+
+    public void setServiceFee(double serviceFee) {
+        this.serviceFee = serviceFee;
+    }
+
+    public double getInterestRate() {
+        return interestRate;
+    }
+
+    public void setInterestRate(double interestRate) {
+        this.interestRate = interestRate;
+    }
+
+    public abstract void applyInterest();  // Specific to checking or savings accounts
 }
