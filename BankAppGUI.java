@@ -6,7 +6,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class BankAppGUI extends JFrame {
-    private JTextField idField, firstNameField, lastNameField, transactionAmountField;
+    private JTextField idField, firstNameField, lastNameField, streetField, zipField, phoneField, transactionAmountField;
     private JRadioButton checkingRadio, savingsRadio, depositRadio, withdrawRadio;
     private JComboBox<String> stateDropdown;
     private JLabel statusLabel, balanceLabel;
@@ -15,30 +15,40 @@ public class BankAppGUI extends JFrame {
 
     public BankAppGUI() {
         setTitle("Bank Account Management");
-        setSize(600, 400);
+        setSize(600, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(8, 2));
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);  // Padding
+
+        int row = 0;
 
         // --- Customer Information Fields ---
-        add(new JLabel("Customer ID:"));
-        idField = new JTextField();
-        add(idField);
+        addLabel("Customer ID:", row);
+        idField = addTextField(row++);
 
-        add(new JLabel("First Name:"));
-        firstNameField = new JTextField();
-        add(firstNameField);
+        addLabel("First Name:", row);
+        firstNameField = addTextField(row++);
 
-        add(new JLabel("Last Name:"));
-        lastNameField = new JTextField();
-        add(lastNameField);
+        addLabel("Last Name:", row);
+        lastNameField = addTextField(row++);
 
-        add(new JLabel("State:"));
+        addLabel("Street Address:", row);
+        streetField = addTextField(row++);
+
+        addLabel("ZIP Code:", row);
+        zipField = addTextField(row++);
+
+        addLabel("Phone Number:", row);
+        phoneField = addTextField(row++);
+
+        addLabel("State:", row);
         String[] states = {"IL", "MO", "KS", "MD", "FL", "CA", "VA", "TX"};
         stateDropdown = new JComboBox<>(states);
-        add(stateDropdown);
+        add(stateDropdown, row++);
 
         // --- Account Type Selection ---
-        add(new JLabel("Account Type:"));
+        addLabel("Account Type:", row);
         JPanel accountPanel = new JPanel();
         checkingRadio = new JRadioButton("Checking");
         savingsRadio = new JRadioButton("Savings");
@@ -47,23 +57,20 @@ public class BankAppGUI extends JFrame {
         accountGroup.add(savingsRadio);
         accountPanel.add(checkingRadio);
         accountPanel.add(savingsRadio);
-        add(accountPanel);
+        add(accountPanel, row++);
 
-        // --- Add Customer Button ---
+        // --- Buttons for Adding and Displaying Customers ---
         addCustomerButton = new JButton("Add Customer & Account");
-        add(addCustomerButton);
+        addComponent(addCustomerButton, row++);
 
-        // --- Display Customer Button ---
         displayButton = new JButton("Display Customer Data");
-        add(displayButton);
+        addComponent(displayButton, row++);
 
-        // --- Transaction Amount Field ---
-        add(new JLabel("Transaction Amount:"));
-        transactionAmountField = new JTextField();
-        add(transactionAmountField);
+        // --- Transaction Section ---
+        addLabel("Transaction Amount:", row);
+        transactionAmountField = addTextField(row++);
 
-        // --- Transaction Type Selection (Deposit/Withdraw) ---
-        add(new JLabel("Transaction Type:"));
+        addLabel("Transaction Type:", row);
         JPanel transactionPanel = new JPanel();
         depositRadio = new JRadioButton("Deposit");
         withdrawRadio = new JRadioButton("Withdraw");
@@ -72,24 +79,24 @@ public class BankAppGUI extends JFrame {
         transactionGroup.add(withdrawRadio);
         transactionPanel.add(depositRadio);
         transactionPanel.add(withdrawRadio);
-        add(transactionPanel);
+        add(transactionPanel, row++);
 
         // --- Perform Transaction Button ---
         transactionButton = new JButton("Perform Transaction");
-        add(transactionButton);
+        addComponent(transactionButton, row++);
 
         // --- Balance Display ---
-        add(new JLabel("Balance:"));
+        addLabel("Balance:", row);
         balanceLabel = new JLabel("$0.00");
-        add(balanceLabel);
+        add(balanceLabel, row++);
 
         // --- Status Message ---
         statusLabel = new JLabel("Status: Waiting for input...");
-        add(statusLabel);
+        addComponent(statusLabel, row++);
 
         // --- Clear Button ---
         clearButton = new JButton("Clear");
-        add(clearButton);
+        addComponent(clearButton, row++);
 
         // Set Default Selection for Transaction Type
         depositRadio.setSelected(true);
@@ -101,14 +108,44 @@ public class BankAppGUI extends JFrame {
         clearButton.addActionListener(e -> clearFields());
     }
 
+    private void addLabel(String text, int row) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.anchor = GridBagConstraints.WEST;
+        add(new JLabel(text), gbc);
+    }
+
+    private JTextField addTextField(int row) {
+        JTextField textField = new JTextField(15);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = row;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        add(textField, gbc);
+        return textField;
+    }
+
+    private void addComponent(JComponent component, int row) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(component, gbc);
+    }
+
     private void addCustomer() {
         try {
             String id = idField.getText().trim();
             String firstName = firstNameField.getText().trim();
             String lastName = lastNameField.getText().trim();
+            String street = streetField.getText().trim();
+            String zip = zipField.getText().trim();
+            String phone = phoneField.getText().trim();
             String state = (String) stateDropdown.getSelectedItem();
 
-            if (id.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
+            if (id.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || street.isEmpty() || zip.isEmpty() || phone.isEmpty()) {
                 throw new IllegalArgumentException("All fields must be filled.");
             }
 
@@ -121,7 +158,7 @@ public class BankAppGUI extends JFrame {
                 throw new IllegalArgumentException("Select an account type.");
             }
 
-            Customer customer = new Customer(id, "123456789", lastName, firstName, "123 Street", "City", state, "12345", "1234567890");
+            Customer customer = new Customer(id, "123456789", lastName, firstName, street, "City", state, zip, phone);
             customer.setAccount(account);
             customers.add(customer);
 
@@ -155,10 +192,12 @@ public class BankAppGUI extends JFrame {
                         account.deposit(amount);
                         statusLabel.setText("Deposit successful.");
                     } else if (withdrawRadio.isSelected()) {
-                        account.withdrawal(amount);
-                        statusLabel.setText("Withdrawal successful.");
-                    } else {
-                        throw new IllegalArgumentException("Select a transaction type.");
+                        if (account instanceof CheckingAccount && amount > account.getBalance()) {
+                            statusLabel.setText("Withdraw unsuccessful, fee charged");
+                        } else {
+                            account.withdrawal(amount);
+                            statusLabel.setText("Withdrawal successful.");
+                        }
                     }
                     balanceLabel.setText(String.format("$%.2f", account.getBalance()));
                     return;
@@ -174,6 +213,9 @@ public class BankAppGUI extends JFrame {
         idField.setText("");
         firstNameField.setText("");
         lastNameField.setText("");
+        streetField.setText("");
+        zipField.setText("");
+        phoneField.setText("");
         transactionAmountField.setText("");
         depositRadio.setSelected(true);
         balanceLabel.setText("$0.00");
