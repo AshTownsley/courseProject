@@ -6,9 +6,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class BankAcctGUI extends JFrame {
-    private JTextField idField, ssnField, lastNameField, firstNameField, streetField,
-            cityField, zipField, phoneField, balanceField, transactionAmountField;
-    private JComboBox<String> stateBox;
+    private JTextField idField, transactionAmountField;
     private JRadioButton checkingRadio, savingsRadio, depositRadio, withdrawRadio;
     private JLabel statusLabel, balanceLabel;
     private JButton addCustomerButton, displayButton, transactionButton, clearButton;
@@ -18,44 +16,12 @@ public class BankAcctGUI extends JFrame {
         setTitle("Bank Account Management");
         setSize(500, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(12, 2));
+        setLayout(new GridLayout(10, 2));
 
-        // Input Fields
+        // Customer ID Field
         add(new JLabel("Customer ID:"));
         idField = new JTextField();
         add(idField);
-
-        add(new JLabel("SSN:"));
-        ssnField = new JTextField();
-        add(ssnField);
-
-        add(new JLabel("Last Name:"));
-        lastNameField = new JTextField();
-        add(lastNameField);
-
-        add(new JLabel("First Name:"));
-        firstNameField = new JTextField();
-        add(firstNameField);
-
-        add(new JLabel("Street:"));
-        streetField = new JTextField();
-        add(streetField);
-
-        add(new JLabel("City:"));
-        cityField = new JTextField();
-        add(cityField);
-
-        add(new JLabel("State:"));
-        stateBox = new JComboBox<>(new String[]{"IL", "MO", "KS", "MD", "FL", "CA", "VA", "TX"});
-        add(stateBox);
-
-        add(new JLabel("ZIP:"));
-        zipField = new JTextField();
-        add(zipField);
-
-        add(new JLabel("Phone:"));
-        phoneField = new JTextField();
-        add(phoneField);
 
         // Account Type Selection
         add(new JLabel("Account Type:"));
@@ -69,17 +35,20 @@ public class BankAcctGUI extends JFrame {
         accountPanel.add(savingsRadio);
         add(accountPanel);
 
-        // Buttons
+        // Add Customer Button
         addCustomerButton = new JButton("Add Customer & Account");
         add(addCustomerButton);
+
+        // Display Customer Button
         displayButton = new JButton("Display Customer Data");
         add(displayButton);
 
-        // Transaction Section
+        // Transaction Amount Field
         add(new JLabel("Transaction Amount:"));
         transactionAmountField = new JTextField();
         add(transactionAmountField);
 
+        // Transaction Type Selection (Deposit/Withdraw)
         add(new JLabel("Transaction Type:"));
         JPanel transactionPanel = new JPanel();
         depositRadio = new JRadioButton("Deposit");
@@ -89,12 +58,13 @@ public class BankAcctGUI extends JFrame {
         transactionGroup.add(withdrawRadio);
         transactionPanel.add(depositRadio);
         transactionPanel.add(withdrawRadio);
-        add(transactionPanel);
+        add(transactionPanel);  // Ensuring the transaction panel is added correctly
 
+        // Perform Transaction Button
         transactionButton = new JButton("Perform Transaction");
         add(transactionButton);
 
-        // Display balance
+        // Balance Display
         add(new JLabel("Balance:"));
         balanceLabel = new JLabel("$0.00");
         add(balanceLabel);
@@ -107,6 +77,9 @@ public class BankAcctGUI extends JFrame {
         clearButton = new JButton("Clear");
         add(clearButton);
 
+        // Set Default Selection
+        depositRadio.setSelected(true);  // Ensure at least one transaction type is selected
+
         // Button Actions
         addCustomerButton.addActionListener(e -> addCustomer());
         displayButton.addActionListener(e -> displayCustomer());
@@ -117,21 +90,7 @@ public class BankAcctGUI extends JFrame {
     private void addCustomer() {
         try {
             String id = idField.getText().trim();
-            String ssn = ssnField.getText().trim();
-            String lastName = lastNameField.getText().trim();
-            String firstName = firstNameField.getText().trim();
-            String street = streetField.getText().trim();
-            String city = cityField.getText().trim();
-            String state = (String) stateBox.getSelectedItem();
-            String zip = zipField.getText().trim();
-            String phone = phoneField.getText().trim();
-
-            if (id.isEmpty() || ssn.isEmpty() || lastName.isEmpty() || firstName.isEmpty() || street.isEmpty() ||
-                    city.isEmpty() || zip.isEmpty() || phone.isEmpty()) {
-                throw new IllegalArgumentException("All fields must be filled.");
-            }
-
-            Customer customer = new Customer(id, ssn, lastName, firstName, street, city, state, zip, phone);
+            if (id.isEmpty()) throw new IllegalArgumentException("Customer ID cannot be empty.");
 
             Account account;
             if (checkingRadio.isSelected()) {
@@ -142,9 +101,11 @@ public class BankAcctGUI extends JFrame {
                 throw new IllegalArgumentException("Select an account type.");
             }
 
+            Customer customer = new Customer(id, "123456789", "Doe", "John", "123 Street", "City", "IL", "12345", "1234567890");
             customer.setAccount(account);
             customers.add(customer);
-            statusLabel.setText("Customer and account added successfully!");
+
+            statusLabel.setText("Customer added successfully!");
         } catch (Exception ex) {
             statusLabel.setText("Error: " + ex.getMessage());
         }
@@ -154,7 +115,7 @@ public class BankAcctGUI extends JFrame {
         String id = idField.getText().trim();
         for (Customer c : customers) {
             if (c.getCustomerID().equals(id)) {
-                statusLabel.setText("Customer Found: " + c.toString());
+                statusLabel.setText("Customer Found: " + c.getFirstName() + " " + c.getLastName());
                 balanceLabel.setText(String.format("$%.2f", c.getAccount().getBalance()));
                 return;
             }
@@ -191,18 +152,8 @@ public class BankAcctGUI extends JFrame {
 
     private void clearFields() {
         idField.setText("");
-        ssnField.setText("");
-        lastNameField.setText("");
-        firstNameField.setText("");
-        streetField.setText("");
-        cityField.setText("");
-        zipField.setText("");
-        phoneField.setText("");
         transactionAmountField.setText("");
-        checkingRadio.setSelected(false);
-        savingsRadio.setSelected(false);
-        depositRadio.setSelected(false);
-        withdrawRadio.setSelected(false);
+        depositRadio.setSelected(true);
         balanceLabel.setText("$0.00");
         statusLabel.setText("Cleared.");
     }
@@ -214,4 +165,3 @@ public class BankAcctGUI extends JFrame {
         });
     }
 }
-
