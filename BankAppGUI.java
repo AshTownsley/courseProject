@@ -5,25 +5,39 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class BankAcctGUI extends JFrame {
-    private JTextField idField, transactionAmountField;
+public class BankAppGUI extends JFrame {
+    private JTextField idField, firstNameField, lastNameField, transactionAmountField;
     private JRadioButton checkingRadio, savingsRadio, depositRadio, withdrawRadio;
+    private JComboBox<String> stateDropdown;
     private JLabel statusLabel, balanceLabel;
     private JButton addCustomerButton, displayButton, transactionButton, clearButton;
     private ArrayList<Customer> customers = new ArrayList<>();
 
-    public BankAcctGUI() {
+    public BankAppGUI() {
         setTitle("Bank Account Management");
-        setSize(500, 500);
+        setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(10, 2));
+        setLayout(new GridLayout(8, 2));
 
-        // Customer ID Field
+        // --- Customer Information Fields ---
         add(new JLabel("Customer ID:"));
         idField = new JTextField();
         add(idField);
 
-        // Account Type Selection
+        add(new JLabel("First Name:"));
+        firstNameField = new JTextField();
+        add(firstNameField);
+
+        add(new JLabel("Last Name:"));
+        lastNameField = new JTextField();
+        add(lastNameField);
+
+        add(new JLabel("State:"));
+        String[] states = {"IL", "MO", "KS", "MD", "FL", "CA", "VA", "TX"};
+        stateDropdown = new JComboBox<>(states);
+        add(stateDropdown);
+
+        // --- Account Type Selection ---
         add(new JLabel("Account Type:"));
         JPanel accountPanel = new JPanel();
         checkingRadio = new JRadioButton("Checking");
@@ -35,20 +49,20 @@ public class BankAcctGUI extends JFrame {
         accountPanel.add(savingsRadio);
         add(accountPanel);
 
-        // Add Customer Button
+        // --- Add Customer Button ---
         addCustomerButton = new JButton("Add Customer & Account");
         add(addCustomerButton);
 
-        // Display Customer Button
+        // --- Display Customer Button ---
         displayButton = new JButton("Display Customer Data");
         add(displayButton);
 
-        // Transaction Amount Field
+        // --- Transaction Amount Field ---
         add(new JLabel("Transaction Amount:"));
         transactionAmountField = new JTextField();
         add(transactionAmountField);
 
-        // Transaction Type Selection (Deposit/Withdraw)
+        // --- Transaction Type Selection (Deposit/Withdraw) ---
         add(new JLabel("Transaction Type:"));
         JPanel transactionPanel = new JPanel();
         depositRadio = new JRadioButton("Deposit");
@@ -58,29 +72,29 @@ public class BankAcctGUI extends JFrame {
         transactionGroup.add(withdrawRadio);
         transactionPanel.add(depositRadio);
         transactionPanel.add(withdrawRadio);
-        add(transactionPanel);  // Ensuring the transaction panel is added correctly
+        add(transactionPanel);
 
-        // Perform Transaction Button
+        // --- Perform Transaction Button ---
         transactionButton = new JButton("Perform Transaction");
         add(transactionButton);
 
-        // Balance Display
+        // --- Balance Display ---
         add(new JLabel("Balance:"));
         balanceLabel = new JLabel("$0.00");
         add(balanceLabel);
 
-        // Status Message
+        // --- Status Message ---
         statusLabel = new JLabel("Status: Waiting for input...");
         add(statusLabel);
 
-        // Clear Button
+        // --- Clear Button ---
         clearButton = new JButton("Clear");
         add(clearButton);
 
-        // Set Default Selection
-        depositRadio.setSelected(true);  // Ensure at least one transaction type is selected
+        // Set Default Selection for Transaction Type
+        depositRadio.setSelected(true);
 
-        // Button Actions
+        // --- Button Actions ---
         addCustomerButton.addActionListener(e -> addCustomer());
         displayButton.addActionListener(e -> displayCustomer());
         transactionButton.addActionListener(e -> performTransaction());
@@ -90,7 +104,13 @@ public class BankAcctGUI extends JFrame {
     private void addCustomer() {
         try {
             String id = idField.getText().trim();
-            if (id.isEmpty()) throw new IllegalArgumentException("Customer ID cannot be empty.");
+            String firstName = firstNameField.getText().trim();
+            String lastName = lastNameField.getText().trim();
+            String state = (String) stateDropdown.getSelectedItem();
+
+            if (id.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
+                throw new IllegalArgumentException("All fields must be filled.");
+            }
 
             Account account;
             if (checkingRadio.isSelected()) {
@@ -101,7 +121,7 @@ public class BankAcctGUI extends JFrame {
                 throw new IllegalArgumentException("Select an account type.");
             }
 
-            Customer customer = new Customer(id, "123456789", "Doe", "John", "123 Street", "City", "IL", "12345", "1234567890");
+            Customer customer = new Customer(id, "123456789", lastName, firstName, "123 Street", "City", state, "12345", "1234567890");
             customer.setAccount(account);
             customers.add(customer);
 
@@ -152,6 +172,8 @@ public class BankAcctGUI extends JFrame {
 
     private void clearFields() {
         idField.setText("");
+        firstNameField.setText("");
+        lastNameField.setText("");
         transactionAmountField.setText("");
         depositRadio.setSelected(true);
         balanceLabel.setText("$0.00");
@@ -160,7 +182,7 @@ public class BankAcctGUI extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            BankAcctGUI frame = new BankAcctGUI();
+            BankAppGUI frame = new BankAppGUI();
             frame.setVisible(true);
         });
     }
