@@ -2,230 +2,188 @@ package courseProject;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class BankAppGUI extends JFrame {
-    private JTextField idField, firstNameField, lastNameField, streetField, zipField, phoneField, transactionAmountField;
-    private JRadioButton checkingRadio, savingsRadio, depositRadio, withdrawRadio;
+public class BankAppGUI {
+    private JFrame frame;
+    private JTextField idField, ssnField, lastNameField, firstNameField, streetField, cityField, stateField, zipField, phoneField, amountField;
     private JComboBox<String> stateDropdown;
-    private JLabel statusLabel, balanceLabel;
+    private JRadioButton checkingButton, savingsButton, depositButton, withdrawButton;
     private JButton addCustomerButton, displayButton, transactionButton, clearButton;
-    private ArrayList<Customer> customers = new ArrayList<>();
-
+    private JTextArea outputArea;
+    private ArrayList<Customer> customers;
+    
     public BankAppGUI() {
-        setTitle("Bank Account Management");
-        setSize(600, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);  // Padding
-
-        int row = 0;
-
-        // --- Customer Information Fields ---
-        addLabel("Customer ID:", row);
-        idField = addTextField(row++);
-
-        addLabel("First Name:", row);
-        firstNameField = addTextField(row++);
-
-        addLabel("Last Name:", row);
-        lastNameField = addTextField(row++);
-
-        addLabel("Street Address:", row);
-        streetField = addTextField(row++);
-
-        addLabel("ZIP Code:", row);
-        zipField = addTextField(row++);
-
-        addLabel("Phone Number:", row);
-        phoneField = addTextField(row++);
-
-        addLabel("State:", row);
+        customers = new ArrayList<>();
+        frame = new JFrame("Bank Account Application");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 500);
+        frame.setLayout(new GridLayout(12, 2, 5, 5));
+        frame.getContentPane().setBackground(new Color(200, 255, 200));
+        
+        // Labels and Input Fields
+        frame.add(new JLabel("Customer ID:"));
+        idField = new JTextField();
+        frame.add(idField);
+        
+        frame.add(new JLabel("SSN:"));
+        ssnField = new JTextField();
+        frame.add(ssnField);
+        
+        frame.add(new JLabel("Last Name:"));
+        lastNameField = new JTextField();
+        frame.add(lastNameField);
+        
+        frame.add(new JLabel("First Name:"));
+        firstNameField = new JTextField();
+        frame.add(firstNameField);
+        
+        frame.add(new JLabel("Street:"));
+        streetField = new JTextField();
+        frame.add(streetField);
+        
+        frame.add(new JLabel("City:"));
+        cityField = new JTextField();
+        frame.add(cityField);
+        
+        frame.add(new JLabel("State:"));
         String[] states = {"IL", "MO", "KS", "MD", "FL", "CA", "VA", "TX"};
         stateDropdown = new JComboBox<>(states);
-        add(stateDropdown, row++);
-
-        // --- Account Type Selection ---
-        addLabel("Account Type:", row);
+        frame.add(stateDropdown);
+        
+        frame.add(new JLabel("ZIP:"));
+        zipField = new JTextField();
+        frame.add(zipField);
+        
+        frame.add(new JLabel("Phone:"));
+        phoneField = new JTextField();
+        frame.add(phoneField);
+        
+        frame.add(new JLabel("Account Type:"));
         JPanel accountPanel = new JPanel();
-        checkingRadio = new JRadioButton("Checking");
-        savingsRadio = new JRadioButton("Savings");
+        accountPanel.setBackground(new Color(200, 255, 200));
+        checkingButton = new JRadioButton("Checking");
+        savingsButton = new JRadioButton("Savings");
         ButtonGroup accountGroup = new ButtonGroup();
-        accountGroup.add(checkingRadio);
-        accountGroup.add(savingsRadio);
-        accountPanel.add(checkingRadio);
-        accountPanel.add(savingsRadio);
-        add(accountPanel, row++);
-
-        // --- Buttons for Adding and Displaying Customers ---
-        addCustomerButton = new JButton("Add Customer & Account");
-        addComponent(addCustomerButton, row++);
-
-        displayButton = new JButton("Display Customer Data");
-        addComponent(displayButton, row++);
-
-        // --- Transaction Section ---
-        addLabel("Transaction Amount:", row);
-        transactionAmountField = addTextField(row++);
-
-        addLabel("Transaction Type:", row);
+        accountGroup.add(checkingButton);
+        accountGroup.add(savingsButton);
+        accountPanel.add(checkingButton);
+        accountPanel.add(savingsButton);
+        frame.add(accountPanel);
+        
+        addCustomerButton = new JButton("Add New Customer and Account");
+        frame.add(addCustomerButton);
+        
+        displayButton = new JButton("Display Customer and Account Data");
+        frame.add(displayButton);
+        
+        frame.add(new JLabel("Transaction Amount:"));
+        amountField = new JTextField();
+        frame.add(amountField);
+        
+        frame.add(new JLabel("Transaction Type:"));
         JPanel transactionPanel = new JPanel();
-        depositRadio = new JRadioButton("Deposit");
-        withdrawRadio = new JRadioButton("Withdraw");
+        transactionPanel.setBackground(new Color(200, 255, 200));
+        depositButton = new JRadioButton("Deposit");
+        withdrawButton = new JRadioButton("Withdraw");
         ButtonGroup transactionGroup = new ButtonGroup();
-        transactionGroup.add(depositRadio);
-        transactionGroup.add(withdrawRadio);
-        transactionPanel.add(depositRadio);
-        transactionPanel.add(withdrawRadio);
-        add(transactionPanel, row++);
-
-        // --- Perform Transaction Button ---
+        transactionGroup.add(depositButton);
+        transactionGroup.add(withdrawButton);
+        transactionPanel.add(depositButton);
+        transactionPanel.add(withdrawButton);
+        frame.add(transactionPanel);
+        
         transactionButton = new JButton("Perform Transaction");
-        addComponent(transactionButton, row++);
-
-        // --- Balance Display ---
-        addLabel("Balance:", row);
-        balanceLabel = new JLabel("$0.00");
-        add(balanceLabel, row++);
-
-        // --- Status Message ---
-        statusLabel = new JLabel("Status: Waiting for input...");
-        addComponent(statusLabel, row++);
-
-        // --- Clear Button ---
+        frame.add(transactionButton);
+        
         clearButton = new JButton("Clear");
-        addComponent(clearButton, row++);
-
-        // Set Default Selection for Transaction Type
-        depositRadio.setSelected(true);
-
-        // --- Button Actions ---
-        addCustomerButton.addActionListener(e -> addCustomer());
-        displayButton.addActionListener(e -> displayCustomer());
-        transactionButton.addActionListener(e -> performTransaction());
-        clearButton.addActionListener(e -> clearFields());
+        frame.add(clearButton);
+        
+        outputArea = new JTextArea();
+        outputArea.setEditable(false);
+        frame.add(new JScrollPane(outputArea));
+        
+        frame.setVisible(true);
+        
+        // Action Listeners
+        addCustomerButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                addCustomer();
+            }
+        });
+        
+        displayButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                displayCustomer();
+            }
+        });
+        
+        transactionButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                performTransaction();
+            }
+        });
+        
+        clearButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                clearFields();
+            }
+        });
     }
-
-    private void addLabel(String text, int row) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        gbc.anchor = GridBagConstraints.WEST;
-        add(new JLabel(text), gbc);
-    }
-
-    private JTextField addTextField(int row) {
-        JTextField textField = new JTextField(15);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = row;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        add(textField, gbc);
-        return textField;
-    }
-
-    private void addComponent(JComponent component, int row) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        add(component, gbc);
-    }
-
+    
     private void addCustomer() {
-        try {
-            String id = idField.getText().trim();
-            String firstName = firstNameField.getText().trim();
-            String lastName = lastNameField.getText().trim();
-            String street = streetField.getText().trim();
-            String zip = zipField.getText().trim();
-            String phone = phoneField.getText().trim();
-            String state = (String) stateDropdown.getSelectedItem();
-
-            if (id.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || street.isEmpty() || zip.isEmpty() || phone.isEmpty()) {
-                throw new IllegalArgumentException("All fields must be filled.");
-            }
-
-            Account account;
-            if (checkingRadio.isSelected()) {
-                account = new CheckingAccount(id);
-            } else if (savingsRadio.isSelected()) {
-                account = new SavingsAccount(id);
-            } else {
-                throw new IllegalArgumentException("Select an account type.");
-            }
-
-            Customer customer = new Customer(id, "123456789", lastName, firstName, street, "City", state, zip, phone);
-            customer.setAccount(account);
-            customers.add(customer);
-
-            statusLabel.setText("Customer added successfully!");
-        } catch (Exception ex) {
-            statusLabel.setText("Error: " + ex.getMessage());
+        String id = idField.getText();
+        String ssn = ssnField.getText();
+        String lastName = lastNameField.getText();
+        String firstName = firstNameField.getText();
+        String street = streetField.getText();
+        String city = cityField.getText();
+        String state = (String) stateDropdown.getSelectedItem();
+        String zip = zipField.getText();
+        String phone = phoneField.getText();
+        
+        Customer customer = new Customer(id, ssn, lastName, firstName, street, city, state, zip, phone);
+        if (checkingButton.isSelected()) {
+            customer.setAccount(new CheckingAccount(id));
+        } else if (savingsButton.isSelected()) {
+            customer.setAccount(new SavingsAccount(id));
         }
+        customers.add(customer);
+        outputArea.setText("Customer and account successfully added.");
     }
-
+    
     private void displayCustomer() {
-        String id = idField.getText().trim();
+        outputArea.setText("");
         for (Customer c : customers) {
-            if (c.getCustomerID().equals(id)) {
-                statusLabel.setText("Customer Found: " + c.getFirstName() + " " + c.getLastName());
-                balanceLabel.setText(String.format("$%.2f", c.getAccount().getBalance()));
-                return;
-            }
+            outputArea.append(c.toString() + "\n");
         }
-        statusLabel.setText("Customer not found.");
     }
-
+    
     private void performTransaction() {
-        try {
-            String id = idField.getText().trim();
-            double amount = Double.parseDouble(transactionAmountField.getText().trim());
-
-            for (Customer c : customers) {
-                if (c.getCustomerID().equals(id)) {
-                    Account account = c.getAccount();
-                    if (depositRadio.isSelected()) {
-                        account.deposit(amount);
-                        statusLabel.setText("Deposit successful.");
-                    } else if (withdrawRadio.isSelected()) {
-                        if (account instanceof CheckingAccount && amount > account.getBalance()) {
-                            statusLabel.setText("Withdraw unsuccessful, fee charged");
-                        } else {
-                            account.withdrawal(amount);
-                            statusLabel.setText("Withdrawal successful.");
-                        }
-                    }
-                    balanceLabel.setText(String.format("$%.2f", account.getBalance()));
-                    return;
+        double amount = Double.parseDouble(amountField.getText());
+        for (Customer c : customers) {
+            Account account = c.getAccount();
+            if (depositButton.isSelected()) {
+                account.deposit(amount);
+            } else if (withdrawButton.isSelected()) {
+                account.withdrawal(amount);
+                if (account instanceof CheckingAccount && account.getBalance() < 0) {
+                    outputArea.setText("Insufficient funds, fee charged");
                 }
             }
-            statusLabel.setText("Customer not found.");
-        } catch (Exception ex) {
-            statusLabel.setText("Error: " + ex.getMessage());
+            outputArea.append("Transaction complete. Balance: $" + account.getBalance() + "\n");
         }
     }
-
+    
     private void clearFields() {
-        idField.setText("");
-        firstNameField.setText("");
-        lastNameField.setText("");
-        streetField.setText("");
-        zipField.setText("");
-        phoneField.setText("");
-        transactionAmountField.setText("");
-        depositRadio.setSelected(true);
-        balanceLabel.setText("$0.00");
-        statusLabel.setText("Cleared.");
+        idField.setText(""); ssnField.setText(""); lastNameField.setText("");
+        firstNameField.setText(""); streetField.setText(""); cityField.setText("");
+        zipField.setText(""); phoneField.setText(""); amountField.setText("");
     }
-
+    
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            BankAppGUI frame = new BankAppGUI();
-            frame.setVisible(true);
-        });
+        new BankAppGUI();
     }
 }
