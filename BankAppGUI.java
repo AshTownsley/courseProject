@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class BankAppGUI {
     private JFrame frame;
-    private JTextField idField, ssnField, lastNameField, firstNameField, streetField, cityField, stateField, zipField, phoneField, amountField;
+    private JTextField idField, ssnField, lastNameField, firstNameField, streetField, cityField, zipField, phoneField, amountField;
     private JComboBox<String> stateDropdown;
     private JRadioButton checkingButton, savingsButton, depositButton, withdrawButton;
     private JButton addCustomerButton, displayButton, transactionButton, clearButton;
@@ -19,8 +19,8 @@ public class BankAppGUI {
         customers = new ArrayList<>();
         frame = new JFrame("Bank Account Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 500);
-        frame.setLayout(new GridLayout(12, 2, 5, 5));
+        frame.setSize(400, 600);
+        frame.setLayout(new GridLayout(18, 2, 5, 5));
         frame.getContentPane().setBackground(new Color(200, 255, 200));
         
         // Labels and Input Fields
@@ -62,16 +62,13 @@ public class BankAppGUI {
         frame.add(phoneField);
         
         frame.add(new JLabel("Account Type:"));
-        JPanel accountPanel = new JPanel();
-        accountPanel.setBackground(new Color(200, 255, 200));
         checkingButton = new JRadioButton("Checking");
         savingsButton = new JRadioButton("Savings");
         ButtonGroup accountGroup = new ButtonGroup();
         accountGroup.add(checkingButton);
         accountGroup.add(savingsButton);
-        accountPanel.add(checkingButton);
-        accountPanel.add(savingsButton);
-        frame.add(accountPanel);
+        frame.add(checkingButton);
+        frame.add(savingsButton);
         
         addCustomerButton = new JButton("Add New Customer and Account");
         frame.add(addCustomerButton);
@@ -84,16 +81,13 @@ public class BankAppGUI {
         frame.add(amountField);
         
         frame.add(new JLabel("Transaction Type:"));
-        JPanel transactionPanel = new JPanel();
-        transactionPanel.setBackground(new Color(200, 255, 200));
         depositButton = new JRadioButton("Deposit");
         withdrawButton = new JRadioButton("Withdraw");
         ButtonGroup transactionGroup = new ButtonGroup();
         transactionGroup.add(depositButton);
         transactionGroup.add(withdrawButton);
-        transactionPanel.add(depositButton);
-        transactionPanel.add(withdrawButton);
-        frame.add(transactionPanel);
+        frame.add(depositButton);
+        frame.add(withdrawButton);
         
         transactionButton = new JButton("Perform Transaction");
         frame.add(transactionButton);
